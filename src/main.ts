@@ -1,5 +1,5 @@
 import { SerialPort } from "serialport";
-import { getGeckoPort, Status, USBGecko } from "./usbgecko";
+import { getGeckoPort, Status, NodeUSBGecko } from "./nodegecko";
 
 async function main() {
     let port = await getGeckoPort();
@@ -19,7 +19,7 @@ async function main() {
 }
 
 async function process(port : SerialPort){
-    let gecko = new USBGecko(port);
+    let gecko = new NodeUSBGecko(port, {retryCount: 1});
 
     let status = await gecko.getStatus();
     console.log(`Console status: ${Status[status]}`);

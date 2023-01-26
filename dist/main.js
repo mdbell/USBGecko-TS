@@ -1,11 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const usbgecko_1 = require("./usbgecko");
-async function init(port) {
-    let gecko = new usbgecko_1.USBGecko(port);
+const nodegecko_1 = require("./nodegecko");
+async function main() {
+    let port = await (0, nodegecko_1.getGeckoPort)();
+    if (!port) {
+        console.error("No USBGecko Found!");
+        return;
+    }
+    port.open((err) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        process(port).finally(() => {
+            port.close();
+        });
+    });
+}
+async function process(port) {
+    let gecko = new nodegecko_1.NodeUSBGecko(port, { retryCount: 1 });
     let status = await gecko.getStatus();
-    console.log(`Console status: ${usbgecko_1.Status[status]}`);
-    if (status == usbgecko_1.Status.Running) {
+    console.log(`Console status: ${nodegecko_1.Status[status]}`);
+    if (status == nodegecko_1.Status.Running) {
         console.log("Pausing system...");
         await gecko.pause();
     }
@@ -15,9 +31,8 @@ async function init(port) {
     //await gecko.poke32(0x80578A04, 50);
     let lives = await gecko.peek32(0x80578A04);
     console.log(`You have ${lives} lives!`);
-    //just some code messing with screenbuffer stuff (mostly to detect if we're dumping concecutive memory correctly)
+    //just some code messing with screenbuffer stuff (mostly to detect if we're dumping consecutive memory correctly)
     let mem = await gecko.readmem(0xCC002000, 0x80);
-    let view = new DataView(mem.buffer, mem.byteOffset);
     let swidth = mem[0x49] << 3;
     let sheight = (mem[0] << 5 | mem[1] >> 3) & 0x7FE;
     let soffset = mem[0x1D] << 16 | mem[0x1E] << 8 | mem[0x1F];
@@ -33,26 +48,10 @@ async function init(port) {
         sheight = sheight / 2;
         swidth *= 2;
     }
-    if (status == usbgecko_1.Status.Paused) {
+    if (status == nodegecko_1.Status.Paused) {
         console.log("Unpausing...");
         await gecko.resume();
     }
-}
-async function main() {
-    let port = await (0, usbgecko_1.getGeckoPort)();
-    if (!port) {
-        console.error("No USBGecko Found!");
-        return;
-    }
-    port.open((err) => {
-        if (err) {
-            console.log(err);
-            return;
-        }
-        init(port).finally(() => {
-            port.close();
-        });
-    });
 }
 main();
 //# sourceMappingURL=main.js.map
