@@ -47,6 +47,14 @@
             const value = await gecko.peek32(address);
             document.getElementById("mem_value").value = value;
         }
+
+        async function step() {
+            if (!gecko || !gecko.connected()) {
+                alert("Need to have an active connection before stepping");
+                return;
+            }
+            await gecko.step();
+        }
     </script>
 </head>
 
@@ -54,6 +62,7 @@
     <button onclick="connect()">Connect</button>
     <button onclick="pause()">Pause</button>
     <button onclick="resume()">Resume</button>
+    <button onclick="step()">Step</button>
     <hr/>
     <label>Address:</label>
     <input type="text" id="mem_addr" name="mem_addr" pattern="#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?" maxlength="8" value="80578A04" /><br />

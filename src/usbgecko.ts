@@ -6,6 +6,8 @@ export const cmd_poke08 = 0x01;
 export const cmd_poke16 = 0x02;
 export const cmd_poke32 = 0x03;
 
+export const cmd_step = 0x44;
+
 export const cmd_status = 0x50;
 
 export const cmd_readmem = 0x04;
@@ -67,6 +69,10 @@ export abstract class AbstractUSBGecko{
 
     async resume(){
         await this.write_single(cmd_resume);
+    }
+
+    async step(){
+        await this.write_single(cmd_step);
     }
 
     async getTitle(){

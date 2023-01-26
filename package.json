@@ -7,7 +7,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "tsc && node dist/main.js",
         "build-web": "tsc && browserify dist/web.js --s WebGecko > dist/bundle.js",
-        "dev": "nodemon -e ts --exec \"npm run build-web && npm run start\""
+        "dev": "nodemon -e ts --exec \"npm run build-web\""
     },
     "repository": {
         "type": "git",
