@@ -65,6 +65,11 @@ export abstract class AbstractUSBGecko{
         await this.write_single(cmd_resume);
     }
 
+    async getTitle(){
+        let buffer = await this.readmem(0x80000000, 4);
+        return buffer.toString("ascii");
+    }
+
     async peek8(address : number){
         let buffer = await this.readmem(address, address + 1);
         return buffer[0];

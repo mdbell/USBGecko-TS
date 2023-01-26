@@ -6,6 +6,7 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "tsc && node dist/main.js"
+
     },
     "repository": {
         "type": "git",
@@ -21,6 +22,7 @@
     "devDependencies": {
         "@types/node": "^18.11.18",
         "@types/serialport": "^8.0.2",
+        "@types/w3c-web-serial": "^1.0.3",
         "typescript": "^4.9.4"
     },
     "dependencies": {

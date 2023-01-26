@@ -2,28 +2,6 @@ import { read } from "fs";
 import { SerialPort } from "serialport";
 import { AbstractUSBGecko } from "./usbgecko";
 
-const cmd_version = 0x99;
-const cmd_pause = 0x06;
-const cmd_resume = 0x07;
-
-const cmd_poke08 = 0x01;
-const cmd_poke16 = 0x02;
-const cmd_poke32 = 0x03;
-
-const cmd_status = 0x50;
-
-const cmd_readmem = 0x04;
-
-const packetsize = 0xF800;
-
-const GCACK = 0xAA;
-const GCRETRY = 0xBB;
-const GCFAIL = 0xCC;
-const GCDONE = 0xFF;
-
-const ACK_BUFFER = Buffer.from(new Uint8Array([GCACK]));
-const FAIL_BUFFER = Buffer.from(new Uint8Array([GCFAIL]));
-
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 function writePromisified(port : SerialPort, data : Buffer) : Promise<void>{

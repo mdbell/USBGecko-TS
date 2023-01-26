@@ -1,10 +1,19 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const serialport_binding_webserialapi_1 = __importDefault(require("serialport-binding-webserialapi"));
-serialport_binding_webserialapi_1.default.list().then(info => {
-    console.log(info);
-});
+exports.create = exports.createFrom = void 0;
+const webgecko_1 = require("./webgecko");
+function createFrom(port) {
+    return new webgecko_1.WebUSBGecko(port);
+}
+exports.createFrom = createFrom;
+async function create() {
+    const port = await navigator.serial.requestPort();
+    if (!port) {
+        alert("No serial port selected!");
+        return;
+    }
+    await port.open({ baudRate: 115200 });
+    return createFrom(port);
+}
+exports.create = create;
 //# sourceMappingURL=web.js.map
