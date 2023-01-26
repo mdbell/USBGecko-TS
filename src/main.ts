@@ -28,10 +28,10 @@ async function process(port : SerialPort){
     let status = await gecko.getStatus();
     console.log(`Console status: ${Status[status]}`);
 
-    if(status == Status.Running) {
-        console.log("Pausing system...");
-        await gecko.pause();
-    }
+    // if(status == Status.Running) {
+    //     console.log("Pausing system...");
+    //     await gecko.pause();
+    // }
     
     let version = await gecko.getVersion();
     console.log(`Gecko Version: ${version}`);
@@ -61,10 +61,10 @@ async function process(port : SerialPort){
         swidth *= 2;
     }
 
-    if(status == Status.Paused) {
-        console.log("Unpausing...")
-        await gecko.resume();
-    }
+    // if(status == Status.Paused) {
+    //     console.log("Unpausing...")
+    //     await gecko.resume();
+    // }
 }
 
 main();

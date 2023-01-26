@@ -54,6 +54,14 @@ export class NodeUSBGecko extends AbstractUSBGecko{
         this.retryCount = options.retryCount || 10;
     }
 
+    connected(): boolean {
+        return this.port.isOpen;
+    }
+
+    close() {
+        this.port.close();
+    }
+
     protected read(size: number): Promise<Buffer> {
         return readChecked(this.port, size, this.retryCount).then(buffer =>{
             if(!buffer){

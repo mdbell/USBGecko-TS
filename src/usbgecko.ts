@@ -33,6 +33,10 @@ export abstract class AbstractUSBGecko{
 
     protected abstract write(buffer : Buffer) : Promise<void>;
 
+    abstract connected() : boolean;
+
+    abstract close();
+
     protected async write_single(cmd : number){
         raw_buffer[0] = cmd;
         await this.write(raw_buffer);

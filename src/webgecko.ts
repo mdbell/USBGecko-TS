@@ -16,12 +16,22 @@ async function readInfo(port : SerialPort, dest : Buffer, size : number) {
 }
 
 export class WebUSBGecko extends AbstractUSBGecko{
-
     private port : SerialPort;
 
     constructor(port : SerialPort) {
         super();
         this.port = port;
+    }
+
+    connected(): boolean {
+        if(!this.port.readable || !this.port.writable){
+            return false;
+        }
+        return true;
+    }
+
+    close() {
+        this.port.close();
     }
 
     protected read(size: number): Promise<Buffer> {
