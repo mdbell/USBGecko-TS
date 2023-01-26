@@ -55,6 +55,20 @@
             }
             await gecko.step();
         }
+
+        async function dumpScreen() {
+            if (!gecko || !gecko.connected()) {
+                alert("You need to have an active gecko connection!")
+                return;
+            }
+            await gecko.pause();
+            let img = await WebGecko.getScreenData(gecko);
+            let canvas = document.getElementById('screen');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            canvas.getContext('2d').putImageData(img, 0, 0);
+            await gecko.resume();
+        }
     </script>
 </head>
 
@@ -70,6 +84,9 @@
     <input type="number" id="mem_value" name="mem_value" /><br />
     <button onclick="pokemem()">Poke32</button>
     <button onclick="peekmem()">Peek32</button>
+    <hr />
+    <button onclick="dumpScreen()">Screenshot</button> <br/>
+    <canvas width="365" height="463" id="screen" />
 </body>
 
 </html>
