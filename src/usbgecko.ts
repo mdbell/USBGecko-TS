@@ -70,12 +70,12 @@ export abstract class AbstractUSBGecko{
     }
 
     async getTitle(){
-        let buffer = await this.readmem(0x80000000, 4);
+        let buffer = await this.readmem_s(0x80000000, 4);
         return buffer.toString("ascii");
     }
 
     async peek8(address : number){
-        let buffer = await this.readmem(address, address + 1);
+        let buffer = await this.readmem_s(address, 1);
         return buffer[0];
     }
 
@@ -85,8 +85,8 @@ export abstract class AbstractUSBGecko{
 
     async peek16(address : number){
         address &= 0xFFFFFFFE
-        let buffer = await this.readmem(address, address + 2);
-        let view = new DataView(buffer.buffer);
+        let buffer = await this.readmem_s(address, 2);
+        let view = new DataView(buffer.buffer, buffer.byteOffset);
         return view.getUint16(0);
     }
 
@@ -96,7 +96,7 @@ export abstract class AbstractUSBGecko{
     }
 
     async peek32(address: number){
-        let buffer = await this.readmem(address, 4);
+        let buffer = await this.readmem_s(address, 4);
         let view = new DataView(buffer.buffer, buffer.byteOffset);
         return view.getUint32(0); 
     }
@@ -106,7 +106,8 @@ export abstract class AbstractUSBGecko{
         await this.poke(cmd_poke32, address, value);
     }
 
-    async readmem(startAddress : number, size : number){
+    async readmem(startAddress: number, endAddress : number){
+        let size = endAddress - startAddress;
         await this.write_single(cmd_readmem);
         let read = await this.read(1);
         if(!read){
@@ -119,7 +120,7 @@ export abstract class AbstractUSBGecko{
         //write the addresses
         let message = this.createMessage(0, 7);
         message.view.setUint32(0, startAddress);
-        message.view.setUint32(4, startAddress + size);
+        message.view.setUint32(4, endAddress);
         await this.write(message.buffer);
         
         let remaining = size;
@@ -137,6 +138,10 @@ export abstract class AbstractUSBGecko{
             }
         }
         return Buffer.concat(_buf);
+    }
+
+    async readmem_s(address : number, size : number){
+        return this.readmem(address, address + size)
     }
 
     protected async poke(cmd : number, address : number, value : number){

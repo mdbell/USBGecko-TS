@@ -43,7 +43,7 @@ async function process(port : SerialPort){
     console.log(`You have ${lives} lives!`)
 
     //just some code messing with screenbuffer stuff (mostly to detect if we're dumping consecutive memory correctly)
-    let mem = await gecko.readmem(0xCC002000, 0x80);
+    let mem = await gecko.readmem_s(0xCC002000, 0x80);
     let swidth = mem[0x49] << 3;
     let sheight = (mem[0] << 5 | mem[1] >> 3) & 0x7FE
     let soffset = mem[0x1D] << 16 | mem[0x1E] << 8 | mem[0x1F]
@@ -55,7 +55,7 @@ async function process(port : SerialPort){
     soffset -= (mem[0x1C] & 0xF) << 3;
     console.log(`Screen info: ${swidth}x${sheight} - offset: ${soffset.toString(16)}`)
     
-    mem = await gecko.readmem(soffset, sheight * swidth * 2);
+    mem = await gecko.readmem_s(soffset, sheight * swidth * 2);
     if(sheight > 600){
         sheight = sheight / 2;
         swidth *= 2;
