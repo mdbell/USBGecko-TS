@@ -12,7 +12,11 @@ async function main() {
             console.log(err);
             return;
         }
-        process(port).finally(() =>{
+        process(port)
+        .catch(err => {
+            console.error("uncaught error ", err)
+        })
+        .finally(() =>{
             port.close();
         })
     })

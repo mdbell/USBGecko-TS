@@ -55,7 +55,12 @@ export class NodeUSBGecko extends AbstractUSBGecko{
     }
 
     protected read(size: number): Promise<Buffer> {
-        return readChecked(this.port, size, this.retryCount);
+        return readChecked(this.port, size, this.retryCount).then(buffer =>{
+            if(!buffer){
+                throw "No buffer read";
+            }
+            return buffer;
+        });
     }
     protected write(buffer: Buffer): Promise<void> {
         return writePromisified(this.port, buffer);
