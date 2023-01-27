@@ -64,7 +64,7 @@ export async function getScreenData(gecko : AbstractUSBGecko) {
         buffer[rgbpos + 3] = 0xFF; // A
     }
 
-    return new ImageData(buffer, swidth, sheight, {colorSpace: "display-p3"});
+    return new ImageData(buffer, swidth, sheight);
 }
 
 function ConvertSafely(value){
