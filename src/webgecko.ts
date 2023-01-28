@@ -1,18 +1,25 @@
 import { AbstractUSBGecko } from "./usbgecko";
 
 async function readInfo(port : SerialPort, dest : Buffer, size : number) {
-    let read = 0;
     let reader = port.readable.getReader();
-    while(port.readable && read < size) {
+    let remaining = size;
+    while(port.readable && remaining > 0) {
         let {done, value} = await reader.read();
         if(done){
             break;
         }
-        dest.set(value, read);
-        read += value.length;
+        let len = Math.min(remaining, value.length);
+        if(len < value.length){
+            //TODO cache the data that has read instead of this silly hack
+            console.warn(`buffer size mismatch! Expected ${len} Actual:${value.length}`)
+            console.warn(`there will be missing data!`)
+            value = value.slice(0, len);
+        }
+        dest.set(value, size - remaining);
+        remaining -= len;
     }
     reader.releaseLock();
-    return read;
+    return size - remaining;
 }
 
 export class WebUSBGecko extends AbstractUSBGecko{
