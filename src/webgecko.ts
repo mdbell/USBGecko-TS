@@ -43,7 +43,7 @@ export class WebUSBGecko extends AbstractUSBGecko{
 
     protected read(size: number): Promise<Buffer> {
         let res = Buffer.alloc(size);
-        return readInfo(this.port, res, size).then(() => res);
+        return readInfo(this.port, res, size).then((size) => res.subarray(0, size));
     }
 
     protected write(buffer: Buffer): Promise<void> {
